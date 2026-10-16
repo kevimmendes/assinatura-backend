@@ -4,9 +4,16 @@ app.use(express.json({ limit: '10mb' }));
 
 const WEBHOOK_URL = process.env.WEBHOOK_URL;
 
+const recentes = new Set();
+
 app.post('/assinatura', async (req, res) => {
     try {
         const { userId, jogador, nome } = req.body;
+
+        const chave = `${userId}-${nome}`;
+        if (recentes.has(chave)) return res.json({ duplicado: true });
+        recentes.add(chave);
+        setTimeout(() => recentes.delete(chave), 10000);
 
         let avatarUrl;
         try {
