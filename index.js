@@ -10,6 +10,8 @@ app.post('/assinatura', async (req, res) => {
     try {
         const { userId, jogador, nome } = req.body;
 
+        if (!userId || !jogador || !nome) return res.json({ ignorado: true });
+
         const chave = `${userId}-${nome}`;
         if (recentes.has(chave)) return res.json({ duplicado: true });
         recentes.add(chave);
